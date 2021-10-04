@@ -1,10 +1,10 @@
 const { Contact } = require('../../model')
 const { NotFound, BadRequest } = require('http-errors')
-const { joiSchemaPatch } = require('../../model/contacts')
+const { joiSchemaPatchFavorite } = require('../../model/contacts')
 const { isValidObjectId } = require('mongoose')
 
 const updateStatusContact = async (req, res) => {
-  const { error } = joiSchemaPatch.validate(req.body)
+  const { error } = joiSchemaPatchFavorite.validate(req.body)
 
   if (error) {
     throw new BadRequest(error.message)

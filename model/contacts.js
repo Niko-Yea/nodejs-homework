@@ -61,8 +61,17 @@ const joiSchemaPatch = Joi.object({
   }),
 })
 
+const joiSchemaPatchFavorite = Joi.object({
+  favorite: Joi.boolean().messages({
+    'boolean.base': 'favorite must be a boolean type',
+  }),
+}).messages({
+  'object.unknown': 'in request body may be only key favorite',
+})
+
 module.exports = {
   Contact,
   joiSchemaPost,
   joiSchemaPatch,
+  joiSchemaPatchFavorite,
 }
