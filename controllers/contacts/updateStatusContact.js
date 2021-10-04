@@ -1,10 +1,9 @@
 const { Contact } = require('../../model')
 const { NotFound, BadRequest } = require('http-errors')
+const { joiSchemaPatch } = require('../../model/contacts')
 const { isValidObjectId } = require('mongoose')
 
-const { joiSchemaPatch } = require('../../model/contacts')
-
-const updateContact = async (req, res) => {
+const updateStatusContact = async (req, res) => {
   const { error } = joiSchemaPatch.validate(req.body)
 
   if (error) {
@@ -19,11 +18,10 @@ const updateContact = async (req, res) => {
 
   const result = await Contact.findByIdAndUpdate(contactId, req.body, {
     new: true,
-    runValidators: true,
   })
 
   if (Object.keys(req.body).length === 0) {
-    throw new BadRequest('missing fields')
+    throw new BadRequest('missing field favorite')
   }
 
   if (!result) {
@@ -33,4 +31,4 @@ const updateContact = async (req, res) => {
   res.json(result)
 }
 
-module.exports = updateContact
+module.exports = updateStatusContact
