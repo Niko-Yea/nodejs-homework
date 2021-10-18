@@ -1,4 +1,4 @@
-const { Schema, model } = require('mongoose')
+const { Schema, SchemaTypes, model } = require('mongoose')
 const Joi = require('joi')
 
 const nameRegEx = /^[a-zA-Zа-яА-Я]+(([' -][a-zA-Zа-яА-Я ])?[a-zA-Zа-яА-Я]*)*$/
@@ -17,18 +17,24 @@ const contactSchema = Schema({
   },
   email: {
     type: String,
+    unique: false,
   },
   phone: {
     type: String,
+    unique: false,
     match: [phoneRegEx, phoneValidationMessage],
   },
   favorite: {
     type: Boolean,
     default: false,
   },
+  owner: {
+    type: SchemaTypes.ObjectId,
+    ref: 'user',
+  },
 })
 
-const Contact = model('contacts', contactSchema)
+const Contact = model('contact', contactSchema)
 
 const joiSchemaPost = Joi.object({
   name: Joi.string().pattern(nameRegEx).required().messages({

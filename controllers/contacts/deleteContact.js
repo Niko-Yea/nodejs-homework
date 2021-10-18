@@ -1,12 +1,17 @@
 const { Contact } = require('../../model')
 const { NotFound } = require('http-errors')
-const { isValidObjectId } = require('mongoose')
+const checkContact = require('./checkContact')
 
 const deleteContact = async (req, res) => {
   const { contactId } = req.params
-  if (!isValidObjectId(contactId)) {
+  const { _id: userId } = req.user
+
+  const isContactBelongsToUser = await checkContact(userId, contactId)
+
+  if (!isContactBelongsToUser) {
     throw new NotFound('Not found')
   }
+
   const isContactDeleted = await Contact.findByIdAndDelete(contactId)
 
   if (!isContactDeleted) {
