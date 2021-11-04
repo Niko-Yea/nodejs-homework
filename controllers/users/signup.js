@@ -1,5 +1,8 @@
 const { User } = require('../../model')
 const { BadRequest, Conflict } = require('http-errors')
+const path = require('path')
+const fs = require('fs/promises')
+const gravatar = require('gravatar')
 
 const { joiSchemaAuth } = require('../../model/auth/users')
 
@@ -16,14 +19,21 @@ const signup = async (req, res) => {
     throw new Conflict('Email in use')
   }
 
-  const newUser = new User({ email })
+  const avatarURL = gravatar.url(email)
+
+  const newUser = new User({ email, avatarURL })
   newUser.setPassword(password)
   const result = await newUser.save()
 
+  const { id, email: usrEmail, subscription } = result
+
+  const userDir = path.join(__dirname, '../../', 'public', id)
+  await fs.mkdir(userDir)
+
   res.status(201).json({
     user: {
-      email: result.email,
-      subscription: result.subscription,
+      email: usrEmail,
+      subscription: subscription,
     },
   })
 }
