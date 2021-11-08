@@ -1,8 +1,13 @@
 const { User } = require('../../model')
 const { BadRequest, Conflict } = require('http-errors')
+const { sendEmail } = require('../../helpers')
+const { createVerifyEmail } = require('../../templates')
+
 const path = require('path')
 const fs = require('fs/promises')
+
 const gravatar = require('gravatar')
+const { v4 } = require('uuid')
 
 const { joiSchemaAuth } = require('../../model/auth/users')
 
@@ -19,11 +24,14 @@ const signup = async (req, res) => {
     throw new Conflict('Email in use')
   }
 
+  const verifyToken = v4()
   const avatarURL = gravatar.url(email)
 
-  const newUser = new User({ email, avatarURL })
+  const newUser = new User({ email, avatarURL, verifyToken })
   newUser.setPassword(password)
   const result = await newUser.save()
+
+  sendEmail(createVerifyEmail(newUser))
 
   const { id, email: usrEmail, subscription } = result
 

@@ -12,6 +12,10 @@ router.post('/logout', authenticate, controllerWrapper(authCtrl.logout))
 
 router.get('/current', authenticate, controllerWrapper(authCtrl.current))
 
+router.get('/verify/:verifyToken', controllerWrapper(authCtrl.verify))
+
+router.post('/verify/', controllerWrapper(authCtrl.resendVerifyEmail))
+
 router.patch(
   '/avatars',
   authenticate,
